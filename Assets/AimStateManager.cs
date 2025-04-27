@@ -4,15 +4,15 @@ using UnityEngine.InputSystem;
 
 public class AimStateManager : MonoBehaviour
 {
-    [SerializeField] private Transform camFollowPos;
-    [SerializeField] private float mouseSensitivity = 1f;
+    [SerializeField] Transform camFollowPos;
+    [SerializeField] float mouseSensitivity = 1f;
 
-    private float xRotation;
-    private float yRotation;
-    private PlayerInput playerInput;
-    private InputAction lookAction;
+    float xRotation;
+    float yRotation;
+    PlayerInput playerInput;
+    InputAction lookAction;
 
-    private void Start()
+    void Start()
     {
         // Set up input
         playerInput = GetComponent<PlayerInput>();
@@ -27,15 +27,25 @@ public class AimStateManager : MonoBehaviour
         Cursor.visible = false;
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
         lookAction?.Disable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
-    private void Update()
+    void Update()
     {
+        if (lookAction == null)
+        {
+            Debug.LogWarning("lookAction is NULL!");
+        }
+        else
+        {
+            Vector2 lookDelta = lookAction.ReadValue<Vector2>();
+            Debug.Log("LookDelta: " + lookDelta);
+        }
+
         if (lookAction != null)
         {
             // Get input from new Input System
@@ -50,7 +60,7 @@ public class AimStateManager : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
+    void LateUpdate()
     {
         if (camFollowPos != null)
         {
